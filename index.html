@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Adonis Blueprint — Weeks 0 to 12</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Narrow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0c0d10;
+    --paper:#0f1115;
+    --bone:#f4f1ea;
+    --bone-dim:#b8b4aa;
+    --blood:#e63950;
+    --steel:#5b8bbd;
+    --line:rgba(244,241,234,.14);
+    --gold:#c9a14a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);
+    color:var(--bone);
+    font-family:'Archivo',sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:1;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+    mix-blend-mode:overlay;opacity:.5;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px;position:relative;z-index:2}
+
+  /* ---------- HERO ---------- */
+  .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;position:relative;padding:80px 0 60px}
+  .hero-kicker{font-family:'Archivo Narrow';text-transform:uppercase;letter-spacing:.5em;font-size:13px;color:var(--blood);font-weight:600;margin-bottom:28px;opacity:0;animation:rise .9s .1s forwards}
+  .hero h1{
+    font-family:'Bebas Neue';font-weight:400;line-height:.86;letter-spacing:.01em;
+    font-size:clamp(64px,12.5vw,176px);color:var(--bone);
+    text-transform:uppercase;margin-bottom:10px;
+  }
+  .hero h1 .l{display:block;opacity:0;animation:rise 1s forwards}
+  .hero h1 .l:nth-child(1){animation-delay:.18s}
+  .hero h1 .l:nth-child(2){animation-delay:.30s;color:transparent;-webkit-text-stroke:2px var(--bone)}
+  .hero h1 .l:nth-child(3){animation-delay:.42s;color:var(--blood)}
+  .hero-sub{display:flex;flex-wrap:wrap;gap:18px 34px;align-items:baseline;margin-top:48px;font-family:'Archivo Narrow';opacity:0;animation:rise 1s .6s forwards}
+  .hero-sub .big{font-family:'Bebas Neue';font-size:34px;letter-spacing:.04em}
+  .hero-sub .lab{text-transform:uppercase;letter-spacing:.22em;font-size:12px;color:var(--bone-dim)}
+  .scrolldown{position:absolute;bottom:26px;left:28px;font-family:'Archivo Narrow';text-transform:uppercase;letter-spacing:.3em;font-size:11px;color:var(--bone-dim);opacity:0;animation:fade 1s 1.1s forwards}
+  .scrolldown::after{content:"";display:block;width:1px;height:46px;background:linear-gradient(var(--blood),transparent);margin-top:14px}
+
+  /* ---------- SECTION SHELL ---------- */
+  section{padding:72px 0;position:relative}
+  .eyebrow{font-family:'Archivo Narrow';text-transform:uppercase;letter-spacing:.4em;font-size:12px;color:var(--blood);font-weight:600;margin-bottom:14px}
+  h2.section-title{font-family:'Bebas Neue';font-weight:400;font-size:clamp(40px,7vw,86px);line-height:.92;text-transform:uppercase;letter-spacing:.01em;margin-bottom:8px}
+  .lede{font-size:19px;max-width:62ch;color:var(--bone-dim);margin-top:18px}
+  .lede strong{color:var(--bone);font-weight:600}
+
+  .divider{height:1px;background:var(--line);margin:0;border:0}
+  .rule-blood{height:3px;width:64px;background:var(--blood);margin:22px 0 0}
+
+  /* ---------- BOOKEND / SLIDER ---------- */
+  .bookend{background:linear-gradient(180deg,#0b0c10,#121419);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:40px}
+  @media(max-width:760px){.compare-grid{grid-template-columns:1fr;gap:48px}}
+  .compare-col h3{font-family:'Archivo Narrow';text-transform:uppercase;letter-spacing:.3em;font-size:13px;color:var(--bone-dim);margin-bottom:16px;text-align:center}
+  .slider{position:relative;width:100%;aspect-ratio:3/4.4;overflow:hidden;border:1px solid var(--line);background:#000;cursor:ew-resize;user-select:none}
+  .slider img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top}
+  .slider .after{clip-path:inset(0 0 0 50%)}
+  .slider .handle{position:absolute;top:0;bottom:0;left:50%;width:2px;background:var(--blood);z-index:3;pointer-events:none}
+  .slider .handle::before{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:42px;height:42px;border:2px solid var(--blood);border-radius:50%;background:rgba(15,17,21,.6);backdrop-filter:blur(2px)}
+  .slider .handle::after{content:"◢◣";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;letter-spacing:-2px;color:var(--blood)}
+  .slider .tag{position:absolute;bottom:12px;font-family:'Archivo Narrow';text-transform:uppercase;letter-spacing:.2em;font-size:11px;padding:5px 10px;background:rgba(12,13,16,.78);z-index:4}
+  .slider .tag.l{left:12px;color:var(--bone-dim)}
+  .slider .tag.r{right:12px;color:var(--blood)}
+
+  /* ---------- TIMELINE ---------- */
+  .week{display:grid;grid-template-columns:96px 1fr;gap:30px;padding:46px 0;border-top:1px solid var(--line);position:relative}
+  @media(max-width:760px){.week{grid-template-columns:1fr;gap:18px}}
+  .week-no{font-family:'Bebas Neue';font-size:clamp(44px,8vw,82px);line-height:.8;color:transparent;-webkit-text-stroke:1.5px var(--bone-dim);position:sticky;top:30px;height:max-content}
+  .week.now .week-no{-webkit-text-stroke:1.5px var(--blood);color:var(--blood)}
+  .week-meta{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+  .week-meta .name{font-family:'Bebas Neue';font-size:30px;letter-spacing:.03em}
+  .week-meta .date{font-family:'Archivo Narrow';text-transform:uppercase;letter-spacing:.2em;font-size:11px;color:var(--bone-dim)}
+  .week-meta .pill{font-family:'Archivo Narrow';text-transform:uppercase;letter-spacing:.18em;font-size:10px;color:var(--paper);background:var(--blood);padding:3px 9px;font-weight:600}
+  .shots{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+  .shot{position:relative;aspect-ratio:3/4;overflow:hidden;background:#000;border:1px solid var(--line)}
+  .shot img{width:100%;height:100%;object-fit:cover;object-position:center 12%;filter:saturate(.96) contrast(1.02);transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+  .shot:hover img{transform:scale(1.04)}
+  .shot .vlabel{position:absolute;top:10px;left:10px;font-family:'Archivo Narrow';text-transform:uppercase;letter-spacing:.2em;font-size:10px;color:var(--bone);background:rgba(12,13,16,.7);padding:3px 8px}
+  .shot.empty{display:flex;align-items:center;justify-content:center;color:var(--bone-dim);font-family:'Archivo Narrow';text-transform:uppercase;letter-spacing:.2em;font-size:11px;text-align:center;padding:20px;border-style:dashed}
+  .note{font-size:16px;color:var(--bone-dim);max-width:64ch}
+  .note b{color:var(--blood);font-weight:600;font-family:'Archivo Narrow';text-transform:uppercase;letter-spacing:.1em;font-size:13px;margin-right:4px}
+
+  /* ---------- STRENGTH TABLE ---------- */
+  .strength{background:linear-gradient(180deg,#121419,#0b0c10)}
+  table{width:100%;border-collapse:collapse;margin-top:34px;font-family:'Archivo Narrow'}
+  thead th{font-family:'Archivo Narrow';text-transform:uppercase;letter-spacing:.18em;font-size:12px;color:var(--bone-dim);text-align:left;padding:0 14px 14px;border-bottom:2px solid var(--blood);font-weight:600}
+  tbody td{padding:13px 14px;border-bottom:1px solid var(--line);font-size:16px}
+  tbody tr td:first-child{font-weight:700;font-family:'Archivo';color:var(--bone)}
+  tbody td.now{color:var(--steel);font-weight:600}
+  tbody td.next{color:var(--bone-dim)}
+  .pb-row td{color:var(--bone)}
+  .pbcallout{margin-top:26px;padding:20px 24px;border-left:3px solid var(--blood);background:rgba(230,57,80,.06);font-size:17px}
+  .pbcallout b{color:var(--blood)}
+
+  /* ---------- PROSE BLOCKS ---------- */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:54px;margin-top:36px}
+  @media(max-width:760px){.grid2{grid-template-columns:1fr;gap:34px}}
+  .block h3{font-family:'Bebas Neue';font-size:30px;letter-spacing:.03em;margin-bottom:12px}
+  .block h3 .n{color:var(--blood);margin-right:10px}
+  .block p{color:var(--bone-dim);font-size:16px;margin-bottom:12px}
+  ul.clean{list-style:none;margin-top:18px}
+  ul.clean li{position:relative;padding-left:26px;margin-bottom:14px;color:var(--bone-dim);font-size:16px}
+  ul.clean li::before{content:"";position:absolute;left:0;top:11px;width:9px;height:9px;background:var(--blood);transform:rotate(45deg)}
+  ul.clean li b{color:var(--bone);font-weight:600}
+
+  /* ---------- CLOSER ---------- */
+  .closer{text-align:center;padding:120px 0}
+  .closer .stamp{font-family:'Bebas Neue';font-size:clamp(38px,6vw,70px);line-height:1;letter-spacing:.02em;max-width:18ch;margin:0 auto}
+  .closer .stamp em{color:var(--blood);font-style:normal}
+  .footer{border-top:1px solid var(--line);padding:30px 0;text-align:center;font-family:'Archivo Narrow';text-transform:uppercase;letter-spacing:.3em;font-size:11px;color:var(--bone-dim)}
+
+  /* reveal on scroll */
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  @keyframes rise{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+  @keyframes fade{to{opacity:1}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-kicker">Progress Photo Journal &nbsp;/&nbsp; James Meteyard</div>
+    <h1>
+      <span class="l">The</span>
+      <span class="l">Adonis</span>
+      <span class="l">Blueprint</span>
+    </h1>
+    <div class="hero-sub">
+      <div><div class="big">12</div><div class="lab">Weeks</div></div>
+      <div><div class="big">3</div><div class="lab">PBs this week</div></div>
+      <div><div class="big">6'1"</div><div class="lab">Push / Pull / Legs</div></div>
+      <div><div class="big">V</div><div class="lab">Taper goal</div></div>
+      <div style="margin-left:auto"><div class="lab">Late Feb &ndash; 28 May 2026</div></div>
+    </div>
+  </div>
+</header>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="eyebrow">The headline</div>
+    <h2 class="section-title">Twelve weeks,<br>frame filled in</h2>
+    <div class="rule-blood"></div>
+    <p class="lede">The frame was always there. Structured training, consistent protein and creatine have filled it in and started leaning it out. <strong>Chest filled first, shoulders widened, the V-taper emerged, posture straightened as the pelvic tilt reduced</strong> &mdash; exactly the order the program predicted.</p>
+    <p class="lede">The last fortnight added the unlock that carries the next block: the full-body brace cue, now locked across every lift. The work that remains is the same it has been since Week 0 &mdash; <strong>the lower belly and the last of the tilt</strong>. Neither is a training-side problem.</p>
+  </div>
+</section>
+
+<!-- BOOKEND -->
+<section class="bookend reveal">
+  <div class="wrap">
+    <div class="eyebrow">Baseline &rarr; Now</div>
+    <h2 class="section-title">Week 0 vs Week 12</h2>
+    <p class="lede">Drag to reveal. Same person, twelve weeks apart.</p>
+    <div class="compare-grid">
+      <div class="compare-col">
+        <h3>Front</h3>
+        <div class="slider" data-slider>
+          <img class="before" data-img="baseline_front" alt="week 0 front">
+          <img class="after" data-img="wk12_front" alt="week 12 front">
+          <div class="handle"></div>
+          <span class="tag l">WK 0</span><span class="tag r">WK 12</span>
+        </div>
+      </div>
+      <div class="compare-col">
+        <h3>Side</h3>
+        <div class="slider" data-slider>
+          <img class="before" data-img="baseline_side" alt="week 0 side">
+          <img class="after" data-img="wk12_side" alt="week 12 side">
+          <div class="handle"></div>
+          <span class="tag l">WK 0</span><span class="tag r">WK 12</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow reveal">Week by week</div>
+    <h2 class="section-title reveal">The timeline</h2>
+    <div id="timeline"></div>
+  </div>
+</section>
+
+<!-- STRENGTH -->
+<section class="strength reveal">
+  <div class="wrap">
+    <div class="eyebrow">The numbers</div>
+    <h2 class="section-title">Strength progression</h2>
+    <p class="lede">Every working lift has climbed across twelve weeks.</p>
+    <table>
+      <thead><tr><th>Lift</th><th>Wk 6</th><th>Wk 12</th><th>On the table</th></tr></thead>
+      <tbody id="strength-body"></tbody>
+    </table>
+    <div class="pbcallout"><b>Three PBs this week alone</b> &mdash; 20kg shoulder press, 45kg lat pulldown, 20kg single arm cable row. All clean, all brace-held, all stopped on honest form rather than ego.</div>
+  </div>
+</section>
+
+<!-- BRACE + BOTTLENECK -->
+<section class="reveal">
+  <div class="wrap">
+    <div class="eyebrow">What changed under the hood</div>
+    <h2 class="section-title">The brace cue</h2>
+    <div class="rule-blood"></div>
+    <p class="lede">A full-body brace &mdash; ribs down, posterior pelvic tilt, glutes engaged, breathing through it &mdash; became the running standard on every lift. Not a cue layered on top. A level change.</p>
+    <ul class="clean">
+      <li>Diagnosed mid-session on scap pulls: cutting the cue stack from seven things to two (<b>glutes + crossed ankles</b>) killed the swing instantly.</li>
+      <li>Transferred straight into clean assisted pull-ups (<b>x8/8/8</b>, full ownership) and unlocked the negatives &mdash; from zero top control to holding the top on <b>9 of 10 reps</b>.</li>
+      <li>Physical confirmations: face-pull rope slip stopped when the brace held, captain's chair joints went quiet.</li>
+      <li>Pre-set ritual now standard: <b>build the brace on the ground first</b>, then grip the bar.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="eyebrow">Named honestly</div>
+    <h2 class="section-title">The bottleneck</h2>
+    <p class="lede">The training side is no longer the limiter. The side profile is. Two levers, neither about lifting more.</p>
+    <div class="grid2">
+      <div class="block">
+        <h3><span class="n">01</span>Pelvic tilt</h3>
+        <p>Reduced steadily since Week 0 but still present in the Week 12 side view. The unlock is the brace cue plus the daily corrective protocol &mdash; hip flexor stretches, glute bridges, dead bugs &mdash; run at the top of every gym day.</p>
+      </div>
+      <div class="block">
+        <h3><span class="n">02</span>Lower belly</h3>
+        <p>Training-day protein lands well (170g+ on the last PB day). The gap is rest-day and weekend consistency. After twelve weeks of upper-body recomp, this is now the lever that moves the side profile.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bookend reveal">
+  <div class="wrap">
+    <div class="eyebrow">The win worth marking</div>
+    <h2 class="section-title">Override &rarr; discipline</h2>
+    <p class="lede">The early-weeks override pattern &mdash; pushing past agreed caps when momentum felt good, technique slipping &mdash; has matured into <strong>stretch-with-discipline</strong>. This week the 20kg single arm row went past the stated cap, but the brace held and the reps were clean: a judgement call with full information, not an ego override. And the 45kg lat pulldown stopped at x8 because rep quality dropped, not because the body failed. Stopping early to protect form is the inverse of the old pattern.</p>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="eyebrow">Weeks 13&ndash;16</div>
+    <h2 class="section-title">Next block</h2>
+    <ul class="clean">
+      <li><b>Open pull days with the PBs.</b> 42.5kg seated row and 20kg face pulls go first &mdash; this week proved 20kg anything doesn't hold clean late in a session.</li>
+      <li><b>Drop pull-up assistance to 30kg</b> now that x8/8/8 is owned at 35kg.</li>
+      <li><b>Add unilateral left-led pressing.</b> The left arm is the governor on bilateral PBs; close the gap so it stops capping the lifts.</li>
+      <li><b>Tricep pushdowns earlier</b> in the push order so the x10+ at 15kg ownership can be hit fresh.</li>
+      <li><b>The belly is now the headline lever.</b> Twelve weeks of upper-body recomp have done their job. The next visible jump comes from nutrition consistency on rest days and weekends.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="closer reveal">
+  <div class="wrap">
+    <p class="stamp">The engine is built.<br>Now it's <em>posture and plate</em>, not the bar.</p>
+  </div>
+</section>
+
+<div class="footer">The Adonis Blueprint &nbsp;&middot;&nbsp; Progress Photo Journal &nbsp;&middot;&nbsp; James &nbsp;&middot;&nbsp; 2026</div>
+
+
+<script>
+const IMG = {
+  "baseline_front": "images/baseline_front.jpg",
+  "baseline_side": "images/baseline_side.jpg",
+  "wk1_front": "images/wk1_front.jpg",
+  "wk1_side": "images/wk1_side.jpg",
+  "wk2_front": "images/wk2_front.jpg",
+  "wk2_side": "images/wk2_side.jpg",
+  "wk3_front": "images/wk3_front.jpg",
+  "wk3_side": "images/wk3_side.jpg",
+  "wk5_front": "images/wk5_front.jpg",
+  "wk6_front": "images/wk6_front.jpg",
+  "wk6_side": "images/wk6_side.jpg",
+  "wk7_front": "images/wk7_front.jpg",
+  "wk7_side": "images/wk7_side.jpg",
+  "wk8_front": "images/wk8_front.jpg",
+  "wk8_side": "images/wk8_side.jpg",
+  "wk9_front": "images/wk9_front.jpg",
+  "wk9_side": "images/wk9_side.jpg",
+  "wk10_front": "images/wk10_front.jpg",
+  "wk10_side": "images/wk10_side.jpg",
+  "wk11_front": "images/wk11_front.jpg",
+  "wk11_side": "images/wk11_side.jpg",
+  "wk12_front": "images/wk12_front.jpg",
+  "wk12_side": "images/wk12_side.jpg",
+};
+</script>
+<script>
+  // weeks data
+  const WEEKS = [
+    {no:"00", name:"Baseline", date:"Late February 2026 / Home", f:"baseline_front", s:"baseline_side",
+      note:"True starting point. Pelvic tilt clearly visible in the side profile, lower stomach prominent, shoulders narrow relative to frame. Before structured programming, consistent protein, and creatine."},
+    {no:"01", name:"Week 1", date:"Early March 2026 / Home", f:"wk1_front", s:"wk1_side",
+      note:"Upper chest starting to fill from push work. Shoulders marginally wider. Pelvic tilt very slightly improved. Lower stomach unchanged, the expected lag."},
+    {no:"02", name:"Week 2", date:"9 March 2026 / Gym", f:"wk2_front", s:"wk2_side",
+      note:"Shoulders broader from the front. Upper chest continuing to fill. Every benchmark up week over week as creatine, protein and progressive overload kick in together."},
+    {no:"03", name:"Week 3", date:"Mid March 2026 / Gym", f:"wk3_front", s:"wk3_side",
+      note:"Chest noticeably fuller. Shoulders wider. V-taper starting to emerge. Arms leaner and more defined. Posture visibly improved, pelvic tilt reduced."},
+    {no:"05", name:"Week 5", date:"Late March 2026 / Gym", f:"wk5_front", s:null,
+      note:"Chest has clear shape and fullness. Shoulders wider, V-taper becoming apparent. Upper-body posture significantly improved."},
+    {no:"06", name:"Week 6", date:"Early April 2026 / Gym", f:"wk6_front", s:"wk6_side",
+      note:"Chest fullness clearly visible, the most transformed area. Posture significantly improved from baseline, tilt noticeably reduced. Upper-body proportions reshaping the whole silhouette."},
+    {no:"07", name:"Week 7", date:"Mid April 2026 / Gym", f:"wk7_front", s:"wk7_side",
+      note:"Shoulders and upper back carrying more width. Side profile shows the tilt still present but the lower-back arch softening. Midsection unchanged."},
+    {no:"08", name:"Week 8", date:"Late April 2026 / Home", f:"wk8_front", s:"wk8_side",
+      note:"Upper-body proportions continuing to widen, arms more defined. The recomp is grinding the belly down slowly, as expected on a moderate deficit."},
+    {no:"09", name:"Week 9", date:"Early May 2026 / Home", f:"wk9_front", s:"wk9_side",
+      note:"V-taper clearly readable from the front now. Chest and shoulders carrying the silhouette. Side view still shows the lower belly and a residual tilt."},
+    {no:"10", name:"Week 10", date:"Mid May 2026 / Home", f:"wk10_front", s:"wk10_side",
+      note:"Holding the gains. Shoulders and chest established. Consolidation rather than dramatic change. Side profile is where the work still shows."},
+    {no:"11", name:"Week 11", date:"Late May 2026 / Gym", f:"wk11_front", s:"wk11_side",
+      note:"Upper body clearly reshaped from baseline. The brace-cue work this fortnight starting to influence how the lower back sits. Belly still the dominant side-view feature."},
+    {no:"12", name:"Week 12 — Now", date:"28 May 2026 / Home", f:"wk12_front", s:"wk12_side", now:true,
+      note:"Twelve weeks. V-taper present through shoulders and upper back, training side fully delivering. The two remaining levers show in the side view: lower belly forward (nutrition) and a residual tilt (posture). A meaningful part of the side profile is the tilt amplifying the belly, not pure fat. The brace cue is the tool for the tilt half."},
+  ];
+
+  const STRENGTH = [
+    ["Incline DB press","16kg","20kg × 8-11","22kg"],
+    ["Shoulder press","—","20kg × 8 PB","20kg × 10+"],
+    ["Lat pulldown","40kg","45kg × 8 PB","47.5kg"],
+    ["Seated cable row","—","40kg owned","42.5kg"],
+    ["Single arm row","—","20kg × 8 PB","20kg × 12"],
+    ["Face pulls","—","17.5kg owned","20kg clean"],
+    ["Leg press","reduced","110kg PB","110kg volume"],
+    ["Bicep curls","7.5kg","10kg × 6","x10 ownership"],
+    ["Assisted pull-ups","—","35kg × 8/8/8","30kg assist"],
+    ["Captain's chair","—","22 max","25+"],
+  ];
+
+  // resolve images
+  function setImgs(){ document.querySelectorAll('img[data-img]').forEach(i=>{const k=i.getAttribute('data-img'); if(IMG[k]) i.src=IMG[k];}); }
+
+  // build timeline
+  const tl=document.getElementById('timeline');
+  WEEKS.forEach(w=>{
+    const sideShot = w.s
+      ? `<div class="shot"><span class="vlabel">Side</span><img src="${IMG[w.s]||''}" alt="${w.name} side"></div>`
+      : `<div class="shot empty">Side photo<br>not taken</div>`;
+    tl.insertAdjacentHTML('beforeend', `
+      <article class="week reveal ${w.now?'now':''}">
+        <div class="week-no">${w.no}</div>
+        <div>
+          <div class="week-meta">
+            <span class="name">${w.name}</span>
+            <span class="date">${w.date}</span>
+            ${w.now?'<span class="pill">Latest</span>':''}
+          </div>
+          <div class="shots">
+            <div class="shot"><span class="vlabel">Front</span><img src="${IMG[w.f]||''}" alt="${w.name} front"></div>
+            ${sideShot}
+          </div>
+          <p class="note"><b>Changes</b>${w.note}</p>
+        </div>
+      </article>`);
+  });
+
+  // build strength
+  const sb=document.getElementById('strength-body');
+  STRENGTH.forEach(r=>{
+    const pb = r[2].includes('PB');
+    sb.insertAdjacentHTML('beforeend',
+      `<tr class="${pb?'pb-row':''}"><td>${r[0]}</td><td>${r[1]}</td><td class="now">${r[2]}</td><td class="next">${r[3]}</td></tr>`);
+  });
+
+  setImgs();
+
+  // before/after sliders
+  document.querySelectorAll('[data-slider]').forEach(sl=>{
+    const after=sl.querySelector('.after'), handle=sl.querySelector('.handle');
+    let active=false;
+    function set(x){
+      const r=sl.getBoundingClientRect();
+      let p=(x-r.left)/r.width; p=Math.max(0,Math.min(1,p));
+      after.style.clipPath=`inset(0 0 0 ${p*100}%)`;
+      handle.style.left=`${p*100}%`;
+    }
+    sl.addEventListener('mousedown',e=>{active=true;set(e.clientX)});
+    window.addEventListener('mousemove',e=>{if(active)set(e.clientX)});
+    window.addEventListener('mouseup',()=>active=false);
+    sl.addEventListener('mousemove',e=>{if(!active && e.buttons===0){} });
+    sl.addEventListener('touchstart',e=>{set(e.touches[0].clientX)},{passive:true});
+    sl.addEventListener('touchmove',e=>{set(e.touches[0].clientX)},{passive:true});
+    // hover-to-scrub on desktop for discoverability
+    sl.addEventListener('mousemove',e=>{ if(!active) set(e.clientX); });
+  });
+
+  // scroll reveal
+  const io=new IntersectionObserver((ents)=>{
+    ents.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+  },{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
